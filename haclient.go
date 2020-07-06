@@ -93,13 +93,21 @@ func (c *haclient) keepalive() {
 			for {
 				select {
 				case <-c.ctx.Done():
+					return
 				case <-ticker.C:
 					cc := c.availableConnManager.GetConn(endpoint)
-					if cc == nil {
-						if cc, err = c.dial(endpoint); err != nil {
-							fmt.Printf("%s endpoint `%s` is bad, dial failed, %v", c.logPrefix(), endpoint, err)
-							continue
+					// 连接存在，进行readiness probe
+					if cc != nil {
+						if err = c.readinessProbeRPC(cc); err != nil {
+							fmt.Printf("%s endpoint `%s` is unhealthy now", c.logPrefix(), endpoint)
+							c.availableConnManager.ResetConn(endpoint, nil)
 						}
+						continue
+					}
+					// 连接不存在，新建连接
+					if cc, err = c.dial(endpoint); err != nil {
+						fmt.Printf("%s endpoint `%s` is bad, dial failed, %v", c.logPrefix(), endpoint, err)
+						continue
 					}
 					if err = c.readinessProbeRPC(cc); err != nil {
 						fmt.Printf("%s endpoint `%s` is unhealthy now", c.logPrefix(), endpoint)
@@ -134,7 +142,7 @@ func (c *haclient) RoundRobin() (*grpc.ClientConn, error) {
 }
 
 func (c *haclient) logPrefix() string {
-	return "haclient:"
+	return "grpc-haclient:"
 }
 
 // haClientOption 是对 haclient 的可选项的抽象

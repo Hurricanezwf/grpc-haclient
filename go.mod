@@ -1,4 +1,4 @@
-module git.llsapp.com/ops/grpc-haclient
+module github.com/Hurricanezwf/grpc-haclient
 
 go 1.13
 

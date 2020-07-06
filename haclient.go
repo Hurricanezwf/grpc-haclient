@@ -48,7 +48,6 @@ type haclient struct {
 }
 
 func newHAClient(endpoints []string, readinessProbeRPC ReadinessProbeRPC, opts ...haClientOption) (*haclient, error) {
-
 	if len(endpoints) == 0 {
 		return nil, errors.New("no endpoints found")
 	}

@@ -1,4 +1,4 @@
-package gprc_haclient
+package grpc_haclient
 
 import (
 	"context"

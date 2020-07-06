@@ -1,6 +1,6 @@
 // +build unittest
 
-package gprc_haclient
+package grpc_haclient
 
 import (
 	"testing"

@@ -99,18 +99,18 @@ func (c *haclient) keepalive() {
 					// 连接存在，进行readiness probe
 					if cc != nil {
 						if err = c.readinessProbeRPC(cc); err != nil {
-							fmt.Printf("%s endpoint `%s` is unhealthy now", c.logPrefix(), endpoint)
+							fmt.Printf("%s endpoint `%s` is unhealthy now\n", c.logPrefix(), endpoint)
 							c.availableConnManager.ResetConn(endpoint, nil)
 						}
 						continue
 					}
 					// 连接不存在，新建连接
 					if cc, err = c.dial(endpoint); err != nil {
-						fmt.Printf("%s endpoint `%s` is bad, dial failed, %v", c.logPrefix(), endpoint, err)
+						fmt.Printf("%s endpoint `%s` is bad, dial failed, %v\n", c.logPrefix(), endpoint, err)
 						continue
 					}
 					if err = c.readinessProbeRPC(cc); err != nil {
-						fmt.Printf("%s endpoint `%s` is unhealthy now", c.logPrefix(), endpoint)
+						fmt.Printf("%s endpoint `%s` is unhealthy now\n", c.logPrefix(), endpoint)
 						cc.Close()
 						continue
 					}

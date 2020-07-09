@@ -129,6 +129,9 @@ func (c *haclient) dial(endpoint string) (*grpc.ClientConn, error) {
 
 func (c *haclient) Close() {
 	c.once.Do(func() {
+		if c.cancel != nil {
+			c.cancel()
+		}
 		c.availableConnManager.CloseAll()
 	})
 }
